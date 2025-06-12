@@ -5,10 +5,46 @@ using namespace std;
 //your job is to fix this object
 class Card { // Keeps a card object
 public:
-  //put the constructors and getters and setters here
+  Card() : Card("Hearts", "2", 2){}
+
+  Card (string suit, string rank, int value){
+    this->suit = suit; 
+    this->rank = rank; 
+    this->value = value; 
+  }
+
+  string getSuit(){
+    return suit; 
+  }
+
+  string getRank(){
+    return rank; 
+  }
+
+  int getValue(){
+    return value; 
+  }
+
+  void setSuit(string suit){
+    this->suit = suit; 
+  }
+
+  void setRank(string rank){
+    this->rank = rank; 
+  }
+
+  void setValue(int value){
+    this->value = value; 
+  }
+
+  void print_card(){
+    cout << rank << " of " << suit << endl; 
+  }
 
 private:
-  //put data variables here, look below to see what data variables you should have
+  string suit; 
+  string rank; 
+  int value; 
 };
 
 //define your getters and setters here
@@ -60,12 +96,12 @@ Card dealCard() {
 int dealInitialPlayerCards() {
   Card card1 = dealCard();
   Card card2 = dealCard();
-  cout << "Your cards: ";
+  cout << "Your cards: " << endl;
   card1.print_card();
   card2.print_card();
   //cout << "Your cards: " << RANKS[card1 % 13] << " of " << SUITS[card1 / 13]
      //<< " and " << RANKS[card2 % 13] << " of " << SUITS[card2 / 13] << endl;
-  return card1.get_value() + card2.get_value();
+  return card1.getValue() + card2.getValue();
   //return cardValue(card1) + cardValue(card2);
 }
 
@@ -78,7 +114,7 @@ int playerTurn(int playerTotal) {
     if (action == "hit") {
       Card newCard = dealCard();
       //playerTotal += cardValue(newCard);
-      playerTotal += newCard.get_value();
+      playerTotal += newCard.getValue();
       cout << "You drew a ";
       newCard.print_card();
       //cout << "You drew a " << RANKS[newCard % 13] << " of "
