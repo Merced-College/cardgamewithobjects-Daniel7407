@@ -5,6 +5,7 @@
 **Date: 6/12/2025**
 
 This program implements a basic blackjack game in the terminal using OOD principals. 
+
 Features include: 
 - User input for the player to manage their hand
 - Automated dealer behavior for the player to compete against 
