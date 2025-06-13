@@ -1,9 +1,19 @@
+/*
+Daniel Pulido-Alaniz
+6/12/2025
+
+This program implements a basic blackjack game in 
+the terminal using OOD principals. It includes user 
+input for the player to manage their hand, automated 
+dealer behavior for the player to compete against, and 
+an option to play multiple rounds. 
+*/
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-//your job is to fix this object
+
 class Card { // Keeps a card object
 public:
   Card() : Card("Hearts", "2", 2){}
@@ -48,7 +58,6 @@ private:
   int value; 
 };
 
-//define your getters and setters here
 
 //the rest of the code is working code - if you define your object above
 const string SUITS[] = {"Hearts", "Diamonds", "Clubs", "Spades"};
@@ -97,6 +106,7 @@ Card dealCard() {
   return deck[currentCardIndex++]; 
 }
 
+//Added code to print dealer cards
 void printGameCards(int playerTotal, int dealerTotal){
   cout << "\033[2J\033[1;1H";
   cout << "Your cards: " << endl;
@@ -124,7 +134,7 @@ void printGameCards(int playerTotal, int dealerTotal){
   cout << endl; 
 }
 
-int dealInitialPlayerCards() {
+int dealIntialCards() {
   isPlayerDone = false; 
   Card card1 = dealCard();
   playerHand.push_back(card1); 
@@ -171,6 +181,14 @@ int playerTurn(int playerTotal) {
   return playerTotal;
 }
 
+/*
+NEW FEATURE: Dealer
+- This function handles how the dealer will play. 
+- The dealer will continue to hit until they have
+  reached a total of at least 17. 
+- This function also determines who wins the game. 
+*/
+
 int dealerTurn(int playerTotal){
   isPlayerDone = true; 
   int dealerTotal = dealerHand[0].getValue() + dealerHand[1].getValue(); 
@@ -206,13 +224,21 @@ void runGame(){
   shuffleDeck();
  //printDeck();
 
-  int playerTotal = dealInitialPlayerCards();
+  int playerTotal = dealIntialCards();
   //int dealerTotal = dealInitialDealerCards();
 
   playerTotal = playerTurn(playerTotal);
   dealerTurn(playerTotal); 
 }
 
+/*
+NEW FEATURE: play again
+- Previous main() code was moved to runGame() function above. 
+- When game ends, the user is asked if they want to play again. 
+  If they respond with "y", player and dealer hands are reset 
+  and runGame is called again. 
+- Game terminates when user responds with "n" to play again prompt.
+*/
 
 int main() {
   string keepPlaying = "y"; 
