@@ -1,6 +1,7 @@
 # Blackjack Terminal Game 
 
 **Daniel Pulido-Alaniz**
+
 **Date: 6/12/2025**
 
 This program implements a basic blackjack game in the terminal using OOD principals. 
