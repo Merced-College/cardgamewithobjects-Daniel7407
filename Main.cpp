@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -58,6 +59,9 @@ const int VALUES[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
 // int DECK[52];
 Card deck[52];
 int currentCardIndex = 0;
+vector<Card> playerHand = {}; 
+vector<Card> dealerHand = {};
+bool isPlayerDone; 
 /*
 defines the arrays and variables related to a deck of playing cards through the
 suits, ranks, the current card index, and the deck itself.
@@ -93,15 +97,51 @@ Card dealCard() {
   return deck[currentCardIndex++]; 
 }
 
-int dealInitialPlayerCards() {
-  Card card1 = dealCard();
-  Card card2 = dealCard();
+void printGameCards(int playerTotal, int dealerTotal){
+  cout << "\033[2J\033[1;1H";
   cout << "Your cards: " << endl;
-  card1.print_card();
-  card2.print_card();
+  for(int i = 0; i < playerHand.size(); i++){
+    playerHand[i].print_card(); 
+  }
+
+  if(isPlayerDone){
+    cout << "Your total is " << playerTotal << ". \n";
+  }
+
+  cout << "\nDealer's cards:" << endl; 
+  if(isPlayerDone){
+    for(int i = 0; i < dealerHand.size(); i++){
+      dealerHand[i].print_card(); 
+    }
+  } else {
+    dealerHand[0].print_card(); 
+    cout << "Flipped over card" << endl; 
+  }
+
+  if(isPlayerDone){
+    cout << "Dealer total is " << dealerTotal << ". \n";
+  }
+  cout << endl; 
+}
+
+int dealInitialPlayerCards() {
+  isPlayerDone = false; 
+  Card card1 = dealCard();
+  playerHand.push_back(card1); 
+  Card card2 = dealCard();
+  playerHand.push_back(card2); 
+
+  Card dealerCard1 = dealCard(); 
+  dealerHand.push_back(dealerCard1);
+  Card dealerCard2 = dealCard(); 
+  dealerHand.push_back(dealerCard2);
+
+  int playerTotal = card1.getValue() + card2.getValue();
+
+  printGameCards(playerTotal, card1.getValue()); 
   //cout << "Your cards: " << RANKS[card1 % 13] << " of " << SUITS[card1 / 13]
      //<< " and " << RANKS[card2 % 13] << " of " << SUITS[card2 / 13] << endl;
-  return card1.getValue() + card2.getValue();
+  return playerTotal;
   //return cardValue(card1) + cardValue(card2);
 }
 
@@ -113,10 +153,10 @@ int playerTurn(int playerTotal) {
     getline(cin, action);
     if (action == "hit") {
       Card newCard = dealCard();
+      playerHand.push_back(newCard); 
       //playerTotal += cardValue(newCard);
       playerTotal += newCard.getValue();
-      cout << "You drew a ";
-      newCard.print_card();
+      printGameCards(playerTotal, dealerHand[0].getValue()); 
       //cout << "You drew a " << RANKS[newCard % 13] << " of "
            //<< SUITS[newCard / 13] << endl;
       if (playerTotal > 21) {
@@ -131,21 +171,68 @@ int playerTurn(int playerTotal) {
   return playerTotal;
 }
 
+int dealerTurn(int playerTotal){
+  isPlayerDone = true; 
+  int dealerTotal = dealerHand[0].getValue() + dealerHand[1].getValue(); 
+  printGameCards(playerTotal, dealerTotal); 
+  if (playerTotal > 21){
+    cout << "You busted! Dealer wins." << endl; 
+    return 0; 
+  }
 
-int main() {
+  while (dealerTotal < 17){
+    Card newCard = dealCard(); 
+    dealerHand.push_back(newCard); 
+    dealerTotal += newCard.getValue(); 
+    printGameCards(playerTotal, dealerTotal); 
+  }
+
+  if (dealerTotal > 21){
+    cout << "Dealer busted! You win." << endl; 
+  }  else if (dealerTotal < playerTotal){
+    cout << "You are closer to 21! You win." << endl; 
+  } else if (dealerTotal > playerTotal){
+    cout << "Dealer is closer to 21! Dealer wins." << endl; 
+  } else {
+    cout << "Tie! No one wins." << endl; 
+  }
+
+  return 0; 
+}
+
+void runGame(){
   initializeDeck();
   //printDeck();
   shuffleDeck();
  //printDeck();
 
   int playerTotal = dealInitialPlayerCards();
-  cout << "The playerTotal is " << playerTotal << endl;
   //int dealerTotal = dealInitialDealerCards();
 
   playerTotal = playerTurn(playerTotal);
-  if (playerTotal > 21) {
-    cout << "You busted! Dealer wins." << endl;
-    return 0;
-  } 
-  
+  dealerTurn(playerTotal); 
+}
+
+
+int main() {
+  string keepPlaying = "y"; 
+  while (keepPlaying == "y"){
+    dealerHand.clear(); 
+    playerHand.clear(); 
+    runGame(); 
+    cout << "Do you want to play again? (y/n): ";
+    while (true){
+      getline(cin, keepPlaying);
+      if (keepPlaying == "y"){
+        break; 
+      } else if (keepPlaying == "n"){
+        break; 
+      } else {
+        cout << "Invalid option. Try again" << endl;
+        cout << "Do you want to play again? (y/n): " << endl;
+      }
+    }
+  }
+
+  cout << "Thanks for playing!" << endl; 
 }
