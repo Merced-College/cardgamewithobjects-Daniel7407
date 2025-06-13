@@ -106,7 +106,11 @@ Card dealCard() {
   return deck[currentCardIndex++]; 
 }
 
-//Added code to print dealer cards
+/*
+Added code to print dealer cards with one of the cards
+being "flipped" so that the user can't see its value.
+Card is "unflipped" once the user takes their turn
+*/
 void printGameCards(int playerTotal, int dealerTotal){
   cout << "\033[2J\033[1;1H";
   cout << "Your cards: " << endl;
@@ -134,6 +138,7 @@ void printGameCards(int playerTotal, int dealerTotal){
   cout << endl; 
 }
 
+// Updated function to include starting dealer cards
 int dealIntialCards() {
   isPlayerDone = false; 
   Card card1 = dealCard();
@@ -149,10 +154,8 @@ int dealIntialCards() {
   int playerTotal = card1.getValue() + card2.getValue();
 
   printGameCards(playerTotal, card1.getValue()); 
-  //cout << "Your cards: " << RANKS[card1 % 13] << " of " << SUITS[card1 / 13]
-     //<< " and " << RANKS[card2 % 13] << " of " << SUITS[card2 / 13] << endl;
+
   return playerTotal;
-  //return cardValue(card1) + cardValue(card2);
 }
 
 int playerTurn(int playerTotal) {
@@ -167,8 +170,6 @@ int playerTurn(int playerTotal) {
       //playerTotal += cardValue(newCard);
       playerTotal += newCard.getValue();
       printGameCards(playerTotal, dealerHand[0].getValue()); 
-      //cout << "You drew a " << RANKS[newCard % 13] << " of "
-           //<< SUITS[newCard / 13] << endl;
       if (playerTotal > 21) {
         break;
       }
@@ -220,12 +221,9 @@ int dealerTurn(int playerTotal){
 
 void runGame(){
   initializeDeck();
-  //printDeck();
   shuffleDeck();
- //printDeck();
 
   int playerTotal = dealIntialCards();
-  //int dealerTotal = dealInitialDealerCards();
 
   playerTotal = playerTurn(playerTotal);
   dealerTurn(playerTotal); 
